@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json.Serialization;
-using Lib.Configuration;
 
 namespace Lib.Model
 {
@@ -71,9 +70,9 @@ namespace Lib.Model
         [JsonPropertyName("blobUri")]
         public string BlobUri { get; set; }
 
-        public string GetBlobUri(bool proxy)
+        public string GetBlobUri(bool proxy, string endpoint = "", string container = "")
         {
-            return proxy ? $"{Config.StorageBlobProxyEndpoint}/{Config.StorageBlobContainerName}/{BlobName}" : BlobUri;
+            return proxy ? $"{endpoint}/{container}/{BlobName}" : BlobUri;
         }
 
         public bool Complete

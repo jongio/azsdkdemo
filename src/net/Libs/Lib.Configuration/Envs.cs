@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using DotNetEnv;
 
-namespace Lib
+namespace Lib.Configuration
 {
     public static class Envs
     {

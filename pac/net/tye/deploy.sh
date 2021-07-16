@@ -17,6 +17,8 @@ az acr login --name ${AZURE_CONTAINER_REGISTRY_SERVER}
 echo "DEPLOYING INGRESS"
 kubectl apply -f https://aka.ms/tye/ingress/deploy
 
+kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+
 echo "DEPLOYING APPLICATION"
 tye deploy -v Debug --tags $ENV
 

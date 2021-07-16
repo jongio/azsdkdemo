@@ -1,5 +1,5 @@
 name: memealyzer
-registry: meme617acr.azurecr.io
+registry: memealyzerdevacr.azurecr.io
 services:
   - name: azurite
     image: mcr.microsoft.com/azure-storage/azurite

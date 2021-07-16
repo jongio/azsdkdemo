@@ -15,6 +15,7 @@ namespace Memealyzer.Functions
             [SignalR(HubName = "STORAGE_QUEUE")] IAsyncCollector<SignalRMessage> messages,
             ILogger log)
         {
+            log.LogInformation(message);
             await Messages.SendAsync(messages, message);
         }
     }

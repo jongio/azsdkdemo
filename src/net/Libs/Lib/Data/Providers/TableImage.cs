@@ -1,8 +1,9 @@
 using System;
 using Azure;
 using Azure.Data.Tables;
+using Lib.Model;
 
-namespace Lib.Model
+namespace Lib.Data.Providers
 {
     public class TableImage : Image, ITableEntity
     {

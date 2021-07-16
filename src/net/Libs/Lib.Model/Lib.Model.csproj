@@ -7,7 +7,4 @@
     <PackageReference Include="Azure.Data.Tables" Version="12.1.0-alpha.20210623.1"/>
     <PackageReference Include="Azure.Cosmos" Version="4.0.0-preview3"/>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lib.Configuration\Lib.Configuration.csproj"/>
-  </ItemGroup>
 </Project>

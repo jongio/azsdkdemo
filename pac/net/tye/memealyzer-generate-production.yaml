@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: memealyzernetwebapp
-        image: memealyzerdev7acr.azurecr.io/memealyzernetwebapp:1.0.11
+        image: memedev2acr.azurecr.io/memealyzernetwebapp:1.0.11
         imagePullPolicy: Always
         env:
         - name: DOTNET_LOGGING__CONSOLE__DISABLECOLORS
@@ -81,37 +81,37 @@ spec:
     spec:
       containers:
       - name: memealyzernetapi
-        image: memealyzerdev7acr.azurecr.io/memealyzernetapi:1.0.11
+        image: memedev2acr.azurecr.io/memealyzernetapi:1.0.11
         imagePullPolicy: Always
         env:
         - name: BASENAME
-          value: 'memealyzerdev7'
+          value: 'memedev2'
         - name: REGION
           value: 'westus2'
         - name: FAILOVER_REGION
           value: 'eastus2'
+        - name: AZURE_SUBSCRIPTION_ID
+          value: '25fd0362-aa79-488b-b37b-d6e892009fdf'
         - name: TF_VAR_basename
-          value: 'memealyzerdev7'
+          value: 'memedev2'
         - name: TF_VAR_location
           value: 'westus2'
         - name: TF_VAR_failover_location
           value: 'eastus2'
         - name: AZURE_FUNCTION_APP_NAME
-          value: 'memealyzerdev7function'
+          value: 'memedev2function'
         - name: AZURE_CONTAINER_REGISTRY_SERVER
-          value: 'memealyzerdev7acr.azurecr.io'
+          value: 'memedev2acr.azurecr.io'
         - name: K8S_CONTEXT
-          value: 'memealyzerdev7aks'
+          value: 'memedev2aks'
         - name: CONTAINER_TAG
           value: '1.0.11'
-        - name: AZURE_CLIENT_SYNC_QUEUE_NAME
-          value: 'sync'
-        - name: API_ENDPOINT
-          value: ''
-        - name: FUNCTIONS_ENDPOINT
-          value: ''
         - name: IMAGE_ENDPOINT
           value: 'https://meme-api.herokuapp.com/gimme/wholesomememes'
+        - name: AZURE_STORAGE_TYPE
+          value: 'STORAGE_TABLE'
+        - name: AZURE_MESSAGING_TYPE
+          value: 'STORAGE_QUEUE'
         - name: DOTNET_LOGGING__CONSOLE__DISABLECOLORS
           value: 'true'
         - name: ASPNETCORE_URLS
@@ -172,37 +172,37 @@ spec:
     spec:
       containers:
       - name: memealyzernetqueueservice
-        image: memealyzerdev7acr.azurecr.io/memealyzernetqueueservice:1.0.11
+        image: memedev2acr.azurecr.io/memealyzernetqueueservice:1.0.11
         imagePullPolicy: Always
         env:
         - name: BASENAME
-          value: 'memealyzerdev7'
+          value: 'memedev2'
         - name: REGION
           value: 'westus2'
         - name: FAILOVER_REGION
           value: 'eastus2'
+        - name: AZURE_SUBSCRIPTION_ID
+          value: '25fd0362-aa79-488b-b37b-d6e892009fdf'
         - name: TF_VAR_basename
-          value: 'memealyzerdev7'
+          value: 'memedev2'
         - name: TF_VAR_location
           value: 'westus2'
         - name: TF_VAR_failover_location
           value: 'eastus2'
         - name: AZURE_FUNCTION_APP_NAME
-          value: 'memealyzerdev7function'
+          value: 'memedev2function'
         - name: AZURE_CONTAINER_REGISTRY_SERVER
-          value: 'memealyzerdev7acr.azurecr.io'
+          value: 'memedev2acr.azurecr.io'
         - name: K8S_CONTEXT
-          value: 'memealyzerdev7aks'
+          value: 'memedev2aks'
         - name: CONTAINER_TAG
           value: '1.0.11'
-        - name: AZURE_CLIENT_SYNC_QUEUE_NAME
-          value: 'sync'
-        - name: API_ENDPOINT
-          value: ''
-        - name: FUNCTIONS_ENDPOINT
-          value: ''
         - name: IMAGE_ENDPOINT
           value: 'https://meme-api.herokuapp.com/gimme/wholesomememes'
+        - name: AZURE_STORAGE_TYPE
+          value: 'STORAGE_TABLE'
+        - name: AZURE_MESSAGING_TYPE
+          value: 'STORAGE_QUEUE'
         - name: DOTNET_LOGGING__CONSOLE__DISABLECOLORS
           value: 'true'
         - name: SERVICE__MEMEALYZERNETWEBAPP__PROTOCOL

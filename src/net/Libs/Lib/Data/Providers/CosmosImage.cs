@@ -1,9 +1,7 @@
-using System;
-using Azure;
 using Azure.Cosmos;
-using Azure.Data.Tables;
+using Lib.Model;
 
-namespace Lib.Model
+namespace Lib.Data.Providers
 {
     public class CosmosImage : Image
     {

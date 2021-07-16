@@ -273,6 +273,9 @@ resource function 'Microsoft.Web/sites@2020-06-01' = {
     name: 'appsettings'
     properties: {
       'AzureWebJobsStorage__accountName': storage.name
+      'AzureSignalRConnectionString': '@Microsoft.KeyVault(VaultName=${key_vault.name};SecretName=${key_vault::signalr_connection_string_secret.name})'
+      'ServiceBusConnection__fullyQualifiedNamespace': '${service_bus.name}.servicebus.windows.net'
+      'StorageConnection__queueServiceUri': storage.properties.primaryEndpoints.queue
       'APPINSIGHTS_INSTRUMENTATIONKEY': logging.properties.InstrumentationKey
       'FUNCTIONS_WORKER_RUNTIME': 'dotnet'
       'FUNCTIONS_EXTENSION_VERSION': '~3'

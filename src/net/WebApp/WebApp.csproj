@@ -3,6 +3,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <Version>$(CONTAINER_TAG)</Version>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+    <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Data.AppConfiguration" Version="1.0.3"/>

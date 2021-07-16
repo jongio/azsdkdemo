@@ -26,46 +26,59 @@ namespace Memealyzer
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            using var listener = AzureEventSourceListener.CreateConsoleLogger();
+            if (Config.UseAzuriteQueue)
+            {
+                // Bumping up the MaxPollingInterval so we don't trottle our proxy server
+                builder.Services.PostConfigure<QueuesOptions>(options => options.MaxPollingInterval = Config.StorageQueueMaxPollingInterval);
+            }
+        }
 
-            Envs.Load();
-
-            // KeyVault
-            var secretClient = new SecretClient(Config.KeyVaultEndpoint, Identity.GetCredentialChain());
-            var signalRConnectionString = secretClient.GetSecret(Config.SignalRConnectionStringSecretName);
-
+        public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+        {
             // We use the following value to indicate which function to enable/disable.  That way our function isn't listening for messages when it doesn't have to.
             var storageQueueEnabled = Config.MessagingType == "STORAGE_QUEUE";
 
+            // These settings will be the same locally and in Azure - we just read them from config and set to appSettings.
             var settings = new Dictionary<string, string> {
-                { "AzureSignalRConnectionString", signalRConnectionString.Value.Value },
-                { "ServiceBusConnection:fullyQualifiedNamespace", Config.ServiceBusNamespace },
                 { "MessagingType", Config.MessagingType },
                 { "ClientSyncQueueName", Config.ClientSyncQueueName },
                 { "AzureWebJobs.StorageQueueFunctionRun.Disabled", (!storageQueueEnabled).ToString() },
                 { "AzureWebJobs.ServiceBusFunctionRun.Disabled", storageQueueEnabled.ToString()}
             };
 
-            // If we are using Azurite, then we must set StorageConnection to the Proxy endpoint so the function on Azure can access it
-            if (Config.UseAzuriteQueue)
+            if (Config.IsDevelopment)
             {
-                settings.Add("StorageConnection", Config.AzuriteProxyConnectionString);
+                using var listener = AzureEventSourceListener.CreateConsoleLogger();
 
-                // Bumping up the MaxPollingInterval so we don't trottle our proxy server
-                builder.Services.PostConfigure<QueuesOptions>(options => options.MaxPollingInterval = Config.StorageQueueMaxPollingInterval);
+                // If running locally, get the Azure SignalR ConnectionString from KV because Azure Functions doesn't support the @Microsoft.KeyVault reference locally.
+                // For Azure hosted (not local) the host will automatically read it from appSettings
+
+                var secretClient = new SecretClient(Config.KeyVaultEndpoint, Identity.GetCredentialChain());
+                var signalRConnectionString = secretClient.GetSecret(Config.SignalRConnectionStringSecretName);
+                settings.Add("AzureSignalRConnectionString", signalRConnectionString.Value.Value);
+
+                settings.Add("ServiceBusConnection:fullyQualifiedNamespace", Config.ServiceBusNamespace);
+
+                if (Config.UseAzuriteQueue)
+                {
+                    // If using AzuriteQueue, then we need to use the Azurite connection string that has proxy settings 
+                    settings.Add("StorageConnection", Config.AzuriteProxyConnectionString);
+
+                    // We need to set the maxPollingInterval so we don't get throttled by the proxy
+                    // settings.Add("AzureFunctionsJobHost__Extensions__Queues__MaxPollingInterval", Config.StorageQueueMaxPollingInterval.ToString());
+                    // settings.Add("AzureFunctionsJobHost.Extensions.Queues.MaxPollingInterval", Config.StorageQueueMaxPollingInterval.ToString());
+                    // settings.Add("AzureFunctionsJobHost:Extensions:Queues:MaxPollingInterval", Config.StorageQueueMaxPollingInterval.ToString());
+                }
+                else
+                {
+                    // If not using Azurite, then just set to the Azure hosted queue endpoint.
+                    settings.Add("StorageConnection:queueServiceUri", Config.StorageQueueEndpoint.ToString());
+                }
             }
-            else
-            {
-                settings.Add("AzureWebJobsStorage:accountName", Config.StorageAccountName);
-                settings.Add("StorageConnection:queueServiceUri", Config.StorageQueueEndpoint.ToString());
-            }
 
-            var config = new ConfigurationBuilder()
-                        .AddInMemoryCollection(settings)
-                        .AddEnvironmentVariables()
-                        .Build();
-
-            builder.Services.AddSingleton<IConfiguration>(config);
+            builder.ConfigurationBuilder
+                .AddInMemoryCollection(settings)
+                .AddEnvironmentVariables();
         }
     }
 }
